@@ -38,7 +38,7 @@ except Exception as e:
 	print("Got exception while getting environ port")
 	PORT = 6789
 
-print('Starting Application Server on port :: {%d}...'%PORT)
+print('Starting Application Server on port :: {%d}...'%int(PORT))
 sys.stdout.flush()
 start_server = websockets.serve(echo_bot, '', PORT, process_request=health_check)
 print('Starting event loop...')
