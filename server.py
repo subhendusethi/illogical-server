@@ -27,6 +27,8 @@ async def echo_bot(websocket, path):
 			await asyncio.sleep(0.5)
 			await websocket.send(create_reply(data["message"]))
 
-start_server = websockets.serve(echo_bot, '', 6789, process_request=health_check)
+logger.info('Starting Application Server...')
+start_server = websockets.serve(echo_bot, 'localhost', 6789, process_request=health_check)
+logger.info('Starting event loop...')
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
