@@ -7,10 +7,12 @@ import json
 import logging
 import sys
 import websockets
+import os
 
 logger = logging.getLogger('websockets')
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
+
 
 def create_reply(reply_message):
 	return json.dumps({ "type" : "text_reply", "message" : reply_message})
@@ -29,10 +31,16 @@ async def echo_bot(websocket, path):
 		if data["action"] == "text_message":
 			await asyncio.sleep(0.5)
 			await websocket.send(create_reply(data["message"]))
+PORT = None
+try:
+	PORT = os.environ['PORT']
+except Exception as e:
+	print("Got exception while getting environ port")
+	PORT = 6789
 
-print('Starting Application Server...')
+print('Starting Application Server on port :: {%d}...'%PORT)
 sys.stdout.flush()
-start_server = websockets.serve(echo_bot, 'localhost', 6789, process_request=health_check)
+start_server = websockets.serve(echo_bot, '', PORT, process_request=health_check)
 print('Starting event loop...')
 sys.stdout.flush()
 asyncio.get_event_loop().run_until_complete(start_server)
