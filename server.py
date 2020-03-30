@@ -18,16 +18,14 @@ def create_reply(reply_message):
 	return json.dumps({ "type" : "text_reply", "message" : reply_message})
 
 async def health_check(path, request_headers):
-	print("path incoming ::: {%s}..."%path)
-	sys.stdout.flush()
+	logger("path incoming ::: {%s}..."%path)
 	if path == "/health/":
 		return http.HTTPStatus.OK, [], b"OK\n"
 
 async def echo_bot(websocket, path):
 	async for message in websocket:
 		data = json.loads(message)
-		print("data incoming ::: {%s}..."%data)
-		sys.stdout.flush()
+		logger("data incoming ::: {%s}..."%data)
 		if data["action"] == "text_message":
 			await asyncio.sleep(0.5)
 			await websocket.send(create_reply(data["message"]))
@@ -35,13 +33,11 @@ PORT = None
 try:
 	PORT = os.environ['PORT']
 except Exception as e:
-	print("Got exception while getting environ port")
+	logger("Got exception while getting environ port")
 	PORT = 6789
 
-print('Starting Application Server on port :: {%d}...'%int(PORT))
-sys.stdout.flush()
+logger('Starting Application Server on port :: {%d}...'%int(PORT))
 start_server = websockets.serve(echo_bot, '', PORT, process_request=health_check)
-print('Starting event loop...')
-sys.stdout.flush()
+logger('Starting event loop...')
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
