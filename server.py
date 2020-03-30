@@ -13,7 +13,6 @@ logger = logging.getLogger('websockets')
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
-
 def create_reply(reply_message):
 	return json.dumps({ "type" : "text_reply", "message" : reply_message})
 
