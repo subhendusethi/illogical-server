@@ -1,5 +1,11 @@
-from websockets_server.server import WebSocketServer
 import os
+import logging 
+
+from websockets_server.server import WebSocketServer
+
+logger = logging.getLogger('app')
+logger.setLevel(logging.INFO)
+logger.addHandler(logging.StreamHandler())
 
 PORT = None
 try:
@@ -11,4 +17,3 @@ except Exception as e:
 if __name__ == '__main__':
 	web_socket_server = WebSocketServer(PORT)
 	web_socket_server.start_server()
-	app.run(host='0.0.0.0', port=PORT)
