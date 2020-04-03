@@ -58,6 +58,12 @@ class WebSocketServer:
 		await self.__notify_user_count(user)
 		return (a and b) != None
 
+	def __validate_user(self, provided_user_alias, websocket):
+		if websocket in self.websockets_users_map:
+			registered_user_alias = self.websockets_users_map[websocket]
+			return registered_user_alias == provided_user_alias
+		return False
+
 	async def __global_chat_server(self, websocket, path):
 		try:
 			async for message in websocket:
@@ -72,8 +78,10 @@ class WebSocketServer:
 						break
 				elif data["action"] == "text_message":
 					user_data = data["user_data"]
-					await asyncio.wait([self.users_websocket_map[user_alias].send(self.__create_reply(user_data["message"],
-						user_data["alias"])) for user_alias in self.users_websocket_map if user_alias != user_data["alias"]])
+					provided_user_alias =  user_data["alias"]
+					if self.__validate_user(provided_user_alias, websocket):
+						await asyncio.wait([self.users_websocket_map[user_alias].send(self.__create_reply(user_data["message"],
+							provided_user_alias)) for user_alias in self.users_websocket_map if user_alias != provided_user_alias])
 		finally:
 			await self.__unregister_user(websocket)
 
