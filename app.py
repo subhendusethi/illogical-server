@@ -1,5 +1,5 @@
 import os
-import logging 
+import logging
 
 from websockets_server.server import WebSocketServer
 
@@ -11,7 +11,7 @@ PORT = None
 try:
 	PORT = os.environ['PORT']
 except Exception as e:
-	logger.error("Got exception while getting environ port")
+	logger.error("Got exception while finding environment port")
 	raise Exception("Unable to detect the PORT mapping")
 
 if __name__ == '__main__':
